@@ -24,6 +24,9 @@ if __name__ == "__main__":
 
     try:
         os.mkdir(IMG_SAVE_PATH)
+    except:
+        pass
+    try:
         os.mkdir(IMG_CLASS_PATH)
     except FileExistsError:
         print(f"{IMG_CLASS_PATH} directory already exists, all images will be saved along with existing items in this folder.")
