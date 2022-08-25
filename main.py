@@ -17,7 +17,8 @@ if __name__ == "__main__":
       if not success:
         print("Ignoring empty camera frame.")
         continue
-      # To improve perfomance, mark the image as not writeable to
+
+      # To improve performance, mark the image as not writeable to
       # pass by reference.
       image.flags.writeable = False
       image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -34,7 +35,7 @@ if __name__ == "__main__":
             mp_hands.HAND_CONNECTIONS,
             mp_drawing_styles.get_default_hand_landmarks_style(),
             mp_drawing_styles.get_default_hand_connections_style())
-          cv2.imshow("RPS Recognition", cv2.flip(image, 1))
-          if cv2.waitKey(1) == ord("q"):
-            break
+      cv2.imshow("RPS Recognition", cv2.flip(image, 1))
+      if cv2.waitKey(1) == ord("q"):
+        break
   cap.release()
