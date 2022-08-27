@@ -1,5 +1,5 @@
 # Rock Paper Scissors Recognition
-This project uses an CNN (Convolutional Neural Network) using PyTorch to recognize the Rock, Paper and Scissor hand gesture.
+This project uses an CNN (Convolutional Neural Network) with PyTorch framework to recognize the Rock, Paper and Scissor hand gesture.
 ## Usage:
 ### capture_images.py
 ```
