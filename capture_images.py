@@ -33,12 +33,12 @@ if __name__ == "__main__":
 
     while True:
         ret, frame = cap.read()
+        cv2.rectangle(frame, (100, 100), (500, 500), (255, 0, 0), 2)
+
         if not ret:
             continue
         if count == num_samples:
             break
-
-        cv2.rectangle(frame, (100, 100), (500, 500), (255, 0, 0), 2)
 
         if start:
             roi = frame[100:500, 100:500]
@@ -53,10 +53,10 @@ if __name__ == "__main__":
 
         k = cv2.waitKey(10)
         if k == ord('a'):
-            start = not start
+            start = True
         if k == ord('q'):
             break
 
-    print("\n{} image(s) saved to {}".format(count, IMG_SAVE_PATH))
+    print("\n{} image(s) saved to {}.".format(count, IMG_SAVE_PATH))
     cap.release()
     cv2.destroyAllWindows()
