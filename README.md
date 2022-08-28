@@ -7,3 +7,15 @@ $ ./capture_images.py <label_name> <num_samples>
 # label_name: The label e.g. rock, paper, scissor.
 # num_samples: How many images will be stored.
 ```
+### create_csv.py
+```
+$ ./create_csv.py
+
+```
+Will read all the files from the rps_images dir and create and csv file e.g.:  
+```
+Img,Label
+rock_1.jpg,0
+paper_1.jpg,1
+scissor_1.jpg,2
+```
