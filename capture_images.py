@@ -19,17 +19,12 @@ if __name__ == "__main__":
         print(DESC)
         exit(-1)
 
-    IMG_SAVE_PATH = 'image_data'
-    IMG_CLASS_PATH = os.path.join(IMG_SAVE_PATH, label_name)
+    IMG_SAVE_PATH = 'rps_images'
 
     try:
         os.mkdir(IMG_SAVE_PATH)
-    except:
-        pass
-    try:
-        os.mkdir(IMG_CLASS_PATH)
     except FileExistsError:
-        print(f"{IMG_CLASS_PATH} directory already exists, all images will be saved along with existing items in this folder.")
+        print(f"{IMG_SAVE_PATH} directory already exists, all images will be saved along with existing items in this folder.")
 
     cap = cv2.VideoCapture(0)
 
@@ -47,7 +42,7 @@ if __name__ == "__main__":
 
         if start:
             roi = frame[100:500, 100:500]
-            save_path = os.path.join(IMG_CLASS_PATH, f"{count + 1}.jpg")
+            save_path = os.path.join(IMG_SAVE_PATH, f"{label_name}_{count + 1}.jpg")
             cv2.imwrite(save_path, roi)
             count += 1
 
@@ -62,6 +57,6 @@ if __name__ == "__main__":
         if k == ord('q'):
             break
 
-    print("\n{} image(s) saved to {}".format(count, IMG_CLASS_PATH))
+    print("\n{} image(s) saved to {}".format(count, IMG_SAVE_PATH))
     cap.release()
     cv2.destroyAllWindows()
