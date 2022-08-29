@@ -1,13 +1,55 @@
 #!/usr/bin/env python3
+import os
 import torch
 import torch.nn as nn
-from torch import optim
+import pandas as pd
+from torchvision.io import read_image
+from torch.utils.data import Dataset, DataLoader, random_split
 from torch.autograd import Variable
+from torch import optim
 
 # Device configuration
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-# Defining the CNN
+# Create PyTorch Dataset
+class RPS_Dataset(Dataset):
+    def __init__(self, annotations_file, img_dir, transform=None, target_transform=None):
+        self.img_labels = pd.read_csv(annotations_file)
+        self.img_dir = img_dir
+        self.transform = transform
+        self.target_transform = target_transform
+
+    def __len__(self):
+        return len(self.img_labels)
+
+    def __getitem__(self, idx):
+        img_path = os.path.join(self.img_dir, self.img_labels.iloc[idx, 0])
+        image = read_image(img_path)
+        label = self.img_labels.iloc[idx, 1]
+        if self.transform:
+            image = self.transform(image)
+        if self.target_transform:
+            label = self.target_transform(label)
+        return image, label
+
+dataset = RPS_Dataset(annotations_file="rps.csv",
+                      img_dir="rps_images")
+dataset_len = len(dataset) // 2
+train_set, test_set = random_split(dataset, [dataset_len, dataset_len])
+
+loaders = {
+    'train' : torch.utils.data.DataLoader(train_set,
+                                          batch_size=100,
+                                          shuffle=True,
+                                          num_workers=1),
+
+    'test'  : torch.utils.data.DataLoader(test_set,
+                                          batch_size=100,
+                                          shuffle=True,
+                                          num_workers=1),
+}
+
+# Creating the CNN
 class CNN(nn.Module):
     def __init__(self):
         super(CNN, self).__init__()
@@ -38,7 +80,7 @@ class CNN(nn.Module):
         # Fully connected layer, output 3 classes
         self.out = nn.Linear(32 * 7 * 7, 3)
 
-    def foward(self, x):
+    def forward(self, x):
         x = self.conv1(x)
         x = self.conv2(x)
 
@@ -48,11 +90,51 @@ class CNN(nn.Module):
         # Return x for visualization
         return output, x
 
-cnn = CNN()
+def train(num_epochs, cnn, loaders):
+    cnn.train()
 
-# Optimization function
-optimizer = optim.Adam(cnn.parameters(), lr = 0.01)
+    # Train the model
+    total_step = len(loaders['train'])
 
-# Loss function
-loss_func = nn.CrossEntropyLoss()
+    for epoch in range(num_epochs):
+        for i, (images, labels) in enumerate(loaders['train']):
+            # Gives batch data, normalize x when iterate train_loader
+            # Batch x
+            b_x = Variable(images)
+            # Batch y
+            b_y = Variable(labels)
+            output = cnn(b_x)[0]
+            loss = loss_func(output, b_y)
 
+            # Clear gradients for this training step
+            optimizer.zero_grad()
+
+            # Backpropagation, compute gradients
+            loss.backward()
+
+            # Apply gradients
+            optimizer.step()
+
+            if (i+1) % 100 == 0:
+                print ('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}'
+                       .format(epoch + 1, num_epochs, i + 1, total_step, loss.item()))
+            pass
+        pass
+    pass
+
+if __name__ == "__main__":
+    # Defines the CNN
+    cnn = CNN()
+
+    # Optimization function
+    optimizer = optim.Adam(cnn.parameters(), lr = 0.01)
+
+    # Loss function
+    loss_func = nn.CrossEntropyLoss()
+
+    # Train the model
+    num_epochs = 10
+
+    # TODO: I need an Transformer to make the images grayscale,
+    # resize it to 28x28 and try to train the CNN again.
+    # train(num_epochs, cnn, loaders)
