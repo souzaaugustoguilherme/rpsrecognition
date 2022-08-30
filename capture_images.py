@@ -43,7 +43,7 @@ if __name__ == "__main__":
         if start:
             roi = frame[100:500, 100:500]
             save_path = os.path.join(IMG_SAVE_PATH, f"{label_name}_{count + 1}.jpg")
-            cv2.imwrite(save_path, roi)
+            cv2.imwrite(save_path, cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY))
             count += 1
 
         font = cv2.FONT_HERSHEY_SIMPLEX
