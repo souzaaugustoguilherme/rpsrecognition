@@ -3,6 +3,8 @@ import os
 import torch
 import torch.nn as nn
 import pandas as pd
+import numpy as np
+from torchvision import transforms
 from torchvision.io import read_image
 from torch.utils.data import Dataset, DataLoader, random_split
 from torch.autograd import Variable
@@ -25,7 +27,7 @@ class RPS_Dataset(Dataset):
     def __getitem__(self, idx):
         img_path = os.path.join(self.img_dir, self.img_labels.iloc[idx, 0])
         image = read_image(img_path)
-        label = self.img_labels.iloc[idx, 1]
+        label = torch.from_numpy(np.array(self.img_labels.iloc[idx, 1]))
         if self.transform:
             image = self.transform(image)
         if self.target_transform:
@@ -33,7 +35,9 @@ class RPS_Dataset(Dataset):
         return image, label
 
 dataset = RPS_Dataset(annotations_file="rps.csv",
-                      img_dir="rps_images")
+                      img_dir="rps_images",
+                      transform=transforms.Resize(28))
+
 dataset_len = len(dataset) // 2
 train_set, test_set = random_split(dataset, [dataset_len, dataset_len])
 
@@ -100,7 +104,7 @@ def train(num_epochs, cnn, loaders):
         for i, (images, labels) in enumerate(loaders['train']):
             # Gives batch data, normalize x when iterate train_loader
             # Batch x
-            b_x = Variable(images)
+            b_x = Variable(images.float())
             # Batch y
             b_y = Variable(labels)
             output = cnn(b_x)[0]
@@ -135,6 +139,5 @@ if __name__ == "__main__":
     # Train the model
     num_epochs = 10
 
-    # TODO: I need an Transformer to make the images grayscale,
-    # resize it to 28x28 and try to train the CNN again.
-    # train(num_epochs, cnn, loaders)
+    # MAYBE, MAYBE, WORKS ??!
+    train(num_epochs, cnn, loaders)
