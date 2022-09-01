@@ -107,6 +107,7 @@ def train(num_epochs, cnn, loaders):
             b_x = Variable(images.float())
             # Batch y
             b_y = Variable(labels)
+
             output = cnn(b_x)[0]
             loss = loss_func(output, b_y)
 
@@ -120,11 +121,22 @@ def train(num_epochs, cnn, loaders):
             optimizer.step()
 
             if (i+1) % 100 == 0:
-                print ('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}'
-                       .format(epoch + 1, num_epochs, i + 1, total_step, loss.item()))
-            pass
-        pass
-    pass
+                print('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}'
+                     .format(epoch + 1, num_epochs, i + 1, total_step, loss.item()))
+
+def test():
+    # Test the model
+    cnn.eval()
+
+    with torch.no_grad():
+        correct = 0
+        total = 0
+        for images, labels in loaders['test']:
+            test_output, last_layer = cnn(images.float())
+            pred_y = torch.max(test_output, 1)[1].data.squeeze()
+            accuracy = (pred_y == labels).sum().item() / float(labels.size(0))
+
+        print("Test Accuracy of the model on the test images: {:.2f}".format(accuracy))
 
 if __name__ == "__main__":
     # Defines the CNN
@@ -141,3 +153,6 @@ if __name__ == "__main__":
 
     # MAYBE, MAYBE, WORKS ??!
     train(num_epochs, cnn, loaders)
+
+    # MAYBE, MAYBE, WORKS ??!
+    test()
