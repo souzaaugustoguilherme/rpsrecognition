@@ -23,5 +23,5 @@ scissor_1.jpg,2
 ### train.py
 ```
 $ ./train.py
-# It will generate an model 'rps_recognition.model', the we will use.
+# It will generate an model 'rps_recognition.model'.
 ```
