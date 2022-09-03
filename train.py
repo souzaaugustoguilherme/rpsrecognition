@@ -158,4 +158,4 @@ if __name__ == "__main__":
     test()
 
     # Saves the model
-    torch.save(cnn.state_dict(), os.getcwd()+"/rps_recognition.model")
+    torch.save(cnn.state_dict(), os.getcwd()+"/rps_recognition.pt")
