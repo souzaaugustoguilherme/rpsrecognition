@@ -20,8 +20,8 @@ rock_1.jpg,0
 paper_1.jpg,1
 scissor_1.jpg,2
 ```
-### train.py
+### run.py
 ```
-$ ./train.py
-# It will generate an model 'rps_recognition.model'.
+$ ./run.py
+# It will train and test the model also generates an model 'rps_recognition.pt'.
 ```
