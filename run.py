@@ -151,7 +151,7 @@ if __name__ == "__main__":
     # Train the model
     num_epochs = 10
 
-    # MAYBE, MAYBE, WORKS ??!
+    # MAYBE, MAYBE, WORKS ??! DON'T WORK
     train(num_epochs, cnn, loaders)
 
     # MAYBE, MAYBE, WORKS ??!
